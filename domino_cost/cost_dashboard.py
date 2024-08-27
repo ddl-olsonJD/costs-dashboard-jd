@@ -42,6 +42,9 @@ app = Dash(
     requests_pathname_prefix=requests_pathname_prefix,
 )
 
+billing_tag_display = "block"
+cloud_cost_display = "block"
+
 app.layout = html.Div(
     [
         html.H2(
@@ -98,7 +101,7 @@ app.layout = html.Div(
                         style={"float": "right", "margin-top": "5px"},
                     ),
                     width=1,
-                    style={'display': 'none'},
+                    style={'display': billing_tag_display},
                 ),
                 dbc.Col(
                     dcc.Dropdown(
@@ -109,7 +112,7 @@ app.layout = html.Div(
                         style={"width": "100%", "whiteSpace": "nowrap"},
                     ),
                     width=3,
-                    style={'display': 'none'},
+                    style={'display': billing_tag_display},
                 ),
                 dbc.Col(
                     html.P(
@@ -169,7 +172,8 @@ app.layout = html.Div(
                                 ]
                             )
                         ]
-                    )
+                    ),
+                    style={'display': cloud_cost_display},
                 ),
                 dbc.Col(
                     dbc.Card(
@@ -254,7 +258,12 @@ output_list = [
     ],
 )
 def update(time_span, billing_tag, project, user):
+    global cloud_cost_display
     cloud_cost_sum = get_cloud_cost_sum(time_span, base_url=cost_url, headers=auth_header)
+
+    if cloud_cost_sum == 0.0:
+        cloud_cost_display = "none"
+
     allocations = get_aggregated_allocations(time_span, base_url=cost_url, headers=auth_header)
     if not allocations:
         return (
