@@ -132,6 +132,7 @@ def workload_cost_details(cost_table: DataFrame) -> DataTable:
         "prefix": None,
         "specifier": "$,.2f",
     }
+    display_cost_col = True if cost_table[CostAggregatedLabels.CLOUD_COST.value].sum() > 0 else False
     table = dash_table.DataTable(
         columns=[
             {"name": "TYPE", "id": "TYPE"},
@@ -162,6 +163,7 @@ def workload_cost_details(cost_table: DataFrame) -> DataTable:
                 "id": CostAggregatedLabels.CLOUD_COST.value,
                 "type": "numeric",
                 "format": formatted,
+                "hidden": display_cost_col,
             },
             {
                 "name": CostAggregatedLabels.TOTAL_COST.value,
