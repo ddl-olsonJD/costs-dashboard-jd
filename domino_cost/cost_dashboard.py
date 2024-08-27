@@ -300,13 +300,13 @@ def user_clicked(clickData):
         return [None]
 
 
-@app.callback([Output("project_select", "value")], [Input("project_chart", "clickData")])
-def project_clicked(clickData):
-    if clickData is not None:
-        x_value = clickData["points"][0]["y"]
-        return [x_value]
-    else:
-        return [None]
+# @app.callback([Output("project_select", "value")], [Input("project_chart", "clickData")])
+# def project_clicked(clickData):
+#     if clickData is not None:
+#         x_value = clickData["points"][0]["y"]
+#         return [x_value]
+#     else:
+#         return [None]
 
 
 @app.callback([Output("billing_select", "value")], [Input("tag_chart", "clickData")])
