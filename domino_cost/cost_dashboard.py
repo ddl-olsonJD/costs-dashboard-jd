@@ -98,7 +98,7 @@ app.layout = html.Div(
                         style={"float": "right", "margin-top": "5px"},
                     ),
                     width=1,
-                    style={'display': 'block'},
+                    style={'display': 'none'},
                 ),
                 dbc.Col(
                     dcc.Dropdown(
@@ -109,7 +109,7 @@ app.layout = html.Div(
                         style={"width": "100%", "whiteSpace": "nowrap"},
                     ),
                     width=3,
-                    style={'display': 'block'},
+                    style={'display': 'none'},
                 ),
                 dbc.Col(
                     html.P(
