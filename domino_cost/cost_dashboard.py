@@ -291,13 +291,13 @@ def update(time_span, billing_tag, project, user):
     )
 
 
-@app.callback([Output("user_select", "value")], [Input("user_chart", "clickData")])
-def user_clicked(clickData):
-    if clickData is not None:
-        x_value = clickData["points"][0]["y"]
-        return [x_value]
-    else:
-        return [None]
+# @app.callback([Output("user_select", "value")], [Input("user_chart", "clickData")])
+# def user_clicked(clickData):
+#     if clickData is not None:
+#         x_value = clickData["points"][0]["y"]
+#         return [x_value]
+#     else:
+#         return [None]
 
 
 # @app.callback([Output("project_select", "value")], [Input("project_chart", "clickData")])
@@ -309,13 +309,13 @@ def user_clicked(clickData):
 #         return [None]
 
 
-@app.callback([Output("billing_select", "value")], [Input("tag_chart", "clickData")])
-def billing_tag_clicked(clickData):
-    if clickData is not None:
-        x_value = clickData["points"][0]["y"]
-        return [x_value]
-    else:
-        return [None]
+# @app.callback([Output("billing_select", "value")], [Input("tag_chart", "clickData")])
+# def billing_tag_clicked(clickData):
+#     if clickData is not None:
+#         x_value = clickData["points"][0]["y"]
+#         return [x_value]
+#     else:
+#         return [None]
 
 
 if __name__ == "__main__":
