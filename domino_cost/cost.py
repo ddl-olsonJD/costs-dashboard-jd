@@ -1,3 +1,4 @@
+import logging
 import re
 from datetime import timedelta
 from typing import Any
@@ -18,10 +19,13 @@ from domino_cost.cost_enums import CostAggregatedLabels
 from domino_cost.cost_enums import CostFieldsLabels
 from domino_cost.cost_enums import CostLabels
 
+logger = logging.getLogger(__name__)
+
 
 def get_domino_namespace(api_host) -> str:
     pattern = re.compile("(https?://)((.*\.)*)(?P<ns>.*?):(\d*)\/?(.*)")
     match = pattern.match(api_host)
+    logger.info("getting domino namespace from %s", api_host)
     return match.group("ns")
 
 
@@ -30,6 +34,7 @@ def get_today_timestamp() -> Timestamp:
 
 
 def get_time_delta(time_span) -> timedelta:
+    logger.info("getting time delta from %s", time_span)
     if time_span == "lastweek":
         days_to_use = 7
     else:
@@ -48,6 +53,7 @@ def distribute_cost(df: DataFrame) -> DataFrame:
     """
     distributes __unallocated__ cost for cleaner representation.
     """
+    logger.info("distribute costs")
     fields_list = CostFieldsLabels.to_values_list()
     cost_unallocated = df[df["TYPE"].str.startswith("__")]
     cost_allocated = df[~df["TYPE"].str.startswith("__")]
@@ -65,6 +71,7 @@ def distribute_cloud_cost(df: DataFrame, cost: float) -> DataFrame:
     """
     distribute unaccounted cloud cost across allocated executions.
     """
+    logger.info("distribute cloud costs %s", cost)
     accounted_cost = df[CostFieldsLabels.ALLOC_COST.value].sum()
     cloud_cost_unaccounted = process_or_zero(cost - accounted_cost, cost)
 
@@ -132,7 +139,9 @@ def workload_cost_details(cost_table: DataFrame) -> DataTable:
         "prefix": None,
         "specifier": "$,.2f",
     }
-    display_cost_col = False # True if cost_table[CostAggregatedLabels.CLOUD_COST.value].sum() > 0 else False
+    display_cost_col = True if cost_table[CostAggregatedLabels.CLOUD_COST.value].sum() > 0 else False
+    logger.info("display cost details: display_cost_col %s", display_cost_col)
+    display_cost_col = False  # True if cost_table[CostAggregatedLabels.CLOUD_COST.value].sum() > 0 else False
     table = dash_table.DataTable(
         columns=[
             {"name": "TYPE", "id": "TYPE"},
