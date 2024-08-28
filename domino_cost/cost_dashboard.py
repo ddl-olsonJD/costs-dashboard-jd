@@ -1,3 +1,4 @@
+import logging
 import os
 
 import dash_bootstrap_components as dbc
@@ -21,6 +22,8 @@ from domino_cost.requests_helpers import get_aggregated_allocations
 from domino_cost.requests_helpers import get_cloud_cost_sum
 from domino_cost.requests_helpers import get_token
 
+logger = logging.getLogger(__name__)
+
 api_host = os.environ["DOMINO_API_HOST"]
 api_proxy = os.environ["DOMINO_API_PROXY"]
 
@@ -43,7 +46,7 @@ app = Dash(
 )
 
 billing_tag_display = "block"
-cloud_cost_display = "block"
+cloud_cost_display = "none"
 
 app.layout = html.Div(
     [
@@ -261,8 +264,8 @@ def update(time_span, billing_tag, project, user):
     global cloud_cost_display
     cloud_cost_sum = get_cloud_cost_sum(time_span, base_url=cost_url, headers=auth_header)
 
-    if cloud_cost_sum == 0.0:
-        cloud_cost_display = "none"
+    if cloud_cost_sum > 0.0:
+        cloud_cost_display = "block"
 
     allocations = get_aggregated_allocations(time_span, base_url=cost_url, headers=auth_header)
     if not allocations:
@@ -285,13 +288,13 @@ def update(time_span, billing_tag, project, user):
     distributed_cost_table = get_distributed_execution_cost(cost_table, cloud_cost_sum)
 
     if user is not None:
-        distributed_cost_table = distributed_cost_table[distributed_cost_table[CostLabels.USER] == user]
+        distributed_cost_table = distributed_cost_table[distributed_cost_table[CostLabels.USER.value] == user]
 
     if project is not None:
-        distributed_cost_table = distributed_cost_table[distributed_cost_table[CostLabels.PROJECT_NAME] == project]
+        distributed_cost_table = distributed_cost_table[distributed_cost_table[CostLabels.PROJECT_NAME.value] == project]
 
     if billing_tag is not None:
-        distributed_cost_table = distributed_cost_table[distributed_cost_table[CostLabels.BILLING_TAG] == billing_tag]
+        distributed_cost_table = distributed_cost_table[distributed_cost_table[CostLabels.BILLING_TAG.value] == billing_tag]
 
     return (
         *get_dropdown_filters(distributed_cost_table),
@@ -330,4 +333,6 @@ def update(time_span, billing_tag, project, user):
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
+    logger.info('Started Cost Dashboard App')
     app.run_server(host="0.0.0.0", port=8888)  # Domino hosts all apps at 0.0.0.0:8888
