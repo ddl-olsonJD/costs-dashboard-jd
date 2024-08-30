@@ -104,7 +104,8 @@ app.layout = html.Div(
                         style={"float": "right", "margin-top": "5px"},
                     ),
                     width=1,
-                    style={'display': billing_tag_display},
+                    style={'display': "block"},
+                    id="billing-tag-select-dropdown",
                 ),
                 dbc.Col(
                     dcc.Dropdown(
@@ -115,7 +116,8 @@ app.layout = html.Div(
                         style={"width": "100%", "whiteSpace": "nowrap"},
                     ),
                     width=3,
-                    style={'display': billing_tag_display},
+                    id="billing-tag-select-dropdown",
+                    style={'display': "block"},
                 ),
                 dbc.Col(
                     html.P(
@@ -176,7 +178,8 @@ app.layout = html.Div(
                             )
                         ]
                     ),
-                    style={'display': cloud_cost_display},
+                    id="cloud-cost-card",
+                    style={'display': "block"},
                 ),
                 dbc.Col(
                     dbc.Card(
@@ -233,6 +236,18 @@ app.layout = html.Div(
     ],
     className="container",
 )
+
+
+@app.callback(
+   Output(component_id='cloud-cost-card', component_property='style'),
+   [Input("time_span_select", "value")]
+)
+def show_hide_element(time_span):
+    cloud_cost_sum = get_cloud_cost_sum(time_span, base_url=cost_url, headers=auth_header)
+    if cloud_cost_sum > 0:
+        return {'display': 'block'}
+    else:
+        return {'display': 'none'}
 
 
 output_list = [

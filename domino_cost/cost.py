@@ -141,7 +141,7 @@ def workload_cost_details(cost_table: DataFrame) -> DataTable:
     }
     display_cost_col = True if cost_table[CostAggregatedLabels.CLOUD_COST.value].sum() > 0 else False
     logger.info("display cost details: display_cost_col %s", display_cost_col)
-    display_cost_col = False  # True if cost_table[CostAggregatedLabels.CLOUD_COST.value].sum() > 0 else False
+
     columns = [
         {"name": "TYPE", "id": "TYPE"},
         {"name": CostLabels.PROJECT_NAME.value, "id": CostLabels.PROJECT_NAME.value},
@@ -175,7 +175,6 @@ def workload_cost_details(cost_table: DataFrame) -> DataTable:
                 "id": CostAggregatedLabels.CLOUD_COST.value,
                 "type": "numeric",
                 "format": formatted,
-                "hidden": display_cost_col,
             }
         )
 
