@@ -168,26 +168,28 @@ def workload_cost_details(cost_table: DataFrame) -> DataTable:
         },
     ]
 
-    updated_cols = [
-        # {
-        #     "name": CostAggregatedLabels.CLOUD_COST.value,
-        #     "id": CostAggregatedLabels.CLOUD_COST.value,
-        #     "type": "numeric",
-        #     "format": formatted,
-        #     "hidden": display_cost_col,
-        # },
+    if display_cost_col:
+        columns.append(
+            {
+                "name": CostAggregatedLabels.CLOUD_COST.value,
+                "id": CostAggregatedLabels.CLOUD_COST.value,
+                "type": "numeric",
+                "format": formatted,
+                "hidden": display_cost_col,
+            }
+        )
+
+    columns.append(
         {
             "name": CostAggregatedLabels.TOTAL_COST.value,
             "id": CostAggregatedLabels.TOTAL_COST.value,
             "type": "numeric",
             "format": formatted,
-        },
-    ]
-
-    combined_cols = columns + updated_cols
+        }
+    )
 
     table = dash_table.DataTable(
-        columns=combined_cols,
+        columns=columns,
         data=clean_df(cost_table, "TYPE").to_dict("records"),
         page_size=10,
         sort_action="native",
