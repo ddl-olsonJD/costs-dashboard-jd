@@ -61,8 +61,8 @@ def distribute_cost(df: DataFrame) -> DataFrame:
 
     for field in fields_list:
         cost_allocated[field] = cost_allocated[field] + (
-            (cost_allocated[CostFieldsLabels.ALLOC_COST.value] / cost_allocated_total_sum)
-            * cost_unallocated[field].sum()
+                (cost_allocated[CostFieldsLabels.ALLOC_COST.value] / cost_allocated_total_sum)
+                * cost_unallocated[field].sum()
         )
     return cost_allocated
 
@@ -102,7 +102,7 @@ def get_cumulative_cost_graph(cost_table: DataFrame, time_span: timedelta) -> di
     ).strftime("%B %-d")
     cost_table_grouped_by_date = cost_table.groupby("FORMATTED START")
 
-    colors = ['#FF6543','#A5C5F6', '#563FB3', '#3C3A42', '#777384',]  # Color codes
+    colors = ['#FF6543', '#A5C5F6', '#563FB3', '#3C3A42', '#777384', ]  # Color codes
 
     cumulative_cost_graph = {
         "data": [
@@ -112,7 +112,7 @@ def get_cumulative_cost_graph(cost_table: DataFrame, time_span: timedelta) -> di
                 name=column,
                 marker=dict(color=colors[i])  # Assign color here
             )
-            for i, column in enumerate (["CPU COST", "GPU COST", "STORAGE COST"])
+            for i, column in enumerate(["CPU COST", "GPU COST", "STORAGE COST"])
         ],
         "layout": go.Layout(
             title="Daily Costs by Type",
@@ -142,45 +142,52 @@ def workload_cost_details(cost_table: DataFrame) -> DataTable:
     display_cost_col = True if cost_table[CostAggregatedLabels.CLOUD_COST.value].sum() > 0 else False
     logger.info("display cost details: display_cost_col %s", display_cost_col)
     display_cost_col = False  # True if cost_table[CostAggregatedLabels.CLOUD_COST.value].sum() > 0 else False
+    columns = [
+        {"name": "TYPE", "id": "TYPE"},
+        {"name": CostLabels.PROJECT_NAME.value, "id": CostLabels.PROJECT_NAME.value},
+        {"name": CostLabels.BILLING_TAG.value, "id": CostLabels.BILLING_TAG.value},
+        {"name": CostLabels.USER.value, "id": CostLabels.USER.value},
+        {"name": "START DATE", "id": "FORMATTED START"},
+        {
+            "name": CostFieldsLabels.CPU_COST.value,
+            "id": CostFieldsLabels.CPU_COST.value,
+            "type": "numeric",
+            "format": formatted,
+        },
+        {
+            "name": CostFieldsLabels.GPU_COST.value,
+            "id": CostFieldsLabels.GPU_COST.value,
+            "type": "numeric",
+            "format": formatted,
+        },
+        {
+            "name": CostFieldsLabels.STORAGE_COST.value,
+            "id": CostFieldsLabels.STORAGE_COST.value,
+            "type": "numeric",
+            "format": formatted,
+        },
+    ]
+
+    updated_cols = [
+        # {
+        #     "name": CostAggregatedLabels.CLOUD_COST.value,
+        #     "id": CostAggregatedLabels.CLOUD_COST.value,
+        #     "type": "numeric",
+        #     "format": formatted,
+        #     "hidden": display_cost_col,
+        # },
+        {
+            "name": CostAggregatedLabels.TOTAL_COST.value,
+            "id": CostAggregatedLabels.TOTAL_COST.value,
+            "type": "numeric",
+            "format": formatted,
+        },
+    ]
+
+    combined_cols = columns + updated_cols
+
     table = dash_table.DataTable(
-        columns=[
-            {"name": "TYPE", "id": "TYPE"},
-            {"name": CostLabels.PROJECT_NAME.value, "id": CostLabels.PROJECT_NAME.value},
-            {"name": CostLabels.BILLING_TAG.value, "id": CostLabels.BILLING_TAG.value},
-            {"name": CostLabels.USER.value, "id": CostLabels.USER.value},
-            {"name": "START DATE", "id": "FORMATTED START"},
-            {
-                "name": CostFieldsLabels.CPU_COST.value,
-                "id": CostFieldsLabels.CPU_COST.value,
-                "type": "numeric",
-                "format": formatted,
-            },
-            {
-                "name": CostFieldsLabels.GPU_COST.value,
-                "id": CostFieldsLabels.GPU_COST.value,
-                "type": "numeric",
-                "format": formatted,
-            },
-            {
-                "name": CostFieldsLabels.STORAGE_COST.value,
-                "id": CostFieldsLabels.STORAGE_COST.value,
-                "type": "numeric",
-                "format": formatted,
-            },
-            {
-                "name": CostAggregatedLabels.CLOUD_COST.value,
-                "id": CostAggregatedLabels.CLOUD_COST.value,
-                "type": "numeric",
-                "format": formatted,
-                "hidden": display_cost_col,
-            },
-            {
-                "name": CostAggregatedLabels.TOTAL_COST.value,
-                "id": CostAggregatedLabels.TOTAL_COST.value,
-                "type": "numeric",
-                "format": formatted,
-            },
-        ],
+        columns=combined_cols,
         data=clean_df(cost_table, "TYPE").to_dict("records"),
         page_size=10,
         sort_action="native",
@@ -242,7 +249,7 @@ def build_histogram(cost_table: DataFrame, bin_by: str):
         },
         hover_data={CostAggregatedLabels.TOTAL_COST.value: "$:.2f"},
         category_orders={bin_by: data_index},
-        color_discrete_sequence =["#ff6543"]
+        color_discrete_sequence=["#ff6543"]
     )
     chart.update_layout(
         title_text=title,
