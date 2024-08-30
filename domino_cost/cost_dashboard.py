@@ -105,7 +105,7 @@ app.layout = html.Div(
                     ),
                     width=1,
                     style={'display': "block"},
-                    id="billing-tag-select-dropdown",
+                    id="billing-tag-select-dropdown-p",
                 ),
                 dbc.Col(
                     dcc.Dropdown(
@@ -116,7 +116,7 @@ app.layout = html.Div(
                         style={"width": "100%", "whiteSpace": "nowrap"},
                     ),
                     width=3,
-                    id="billing-tag-select-dropdown",
+                    id="billing-tag-select-dropdown-col",
                     style={'display': "block"},
                 ),
                 dbc.Col(
