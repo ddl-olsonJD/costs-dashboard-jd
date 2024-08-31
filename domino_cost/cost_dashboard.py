@@ -1,4 +1,5 @@
 import logging
+from datetime import date, timedelta
 import os
 
 import dash_bootstrap_components as dbc
@@ -45,6 +46,15 @@ app = Dash(
     requests_pathname_prefix=requests_pathname_prefix,
 )
 
+
+date_format = '%Y-%m-%dT%H:%M:%SZ'
+
+
+def format_date(date_ts):
+    date_obj = date.fromisoformat(date_ts)
+    return date_obj.strftime(date_format)
+
+
 billing_tag_display = "block"
 cloud_cost_display = "none"
 
@@ -82,6 +92,15 @@ app.layout = html.Div(
                     ),
                     width=2,
                 ),
+                dcc.DatePickerRange(
+                    id='date-picker-range',
+                    min_date_allowed=date(2015, 8, 5),
+                    max_date_allowed=date.today(),
+                    initial_visible_month=date(2017, 8, 5),
+                    start_date=date.today() - timedelta(days=30),
+                    end_date=date.today(),
+                ),
+                html.Div(id='date_time_select', hidden=True),
                 dbc.Col(width=9),
             ],
             style={"margin-top": "30px"},
@@ -172,20 +191,6 @@ app.layout = html.Div(
                         children=[
                             dbc.CardBody(
                                 [
-                                    html.H3("Cloud"),
-                                    html.H4("Loading", id="cloudcard"),
-                                ]
-                            )
-                        ]
-                    ),
-                    id="cloud-cost-card",
-                    style={'display': "block"},
-                ),
-                dbc.Col(
-                    dbc.Card(
-                        children=[
-                            dbc.CardBody(
-                                [
                                     html.H3("Compute"),
                                     html.H4("Loading", id="computecard"),
                                 ]
@@ -204,6 +209,20 @@ app.layout = html.Div(
                             )
                         ]
                     )
+                ),
+                dbc.Col(
+                    dbc.Card(
+                        children=[
+                            dbc.CardBody(
+                                [
+                                    html.H3("Cloud Services"),
+                                    html.H4("Loading", id="cloudcard"),
+                                ]
+                            )
+                        ]
+                    ),
+                    id="cloud-cost-card",
+                    style={'display': "block"},
                 ),
             ],
             style={"margin-top": "50px"},
@@ -250,6 +269,17 @@ def show_hide_element(time_span):
         return {'display': 'none'}
 
 
+@app.callback(
+    Output('time_span_select', 'value'),
+    Input('date-picker-range', 'start_date'),
+    Input('date-picker-range', 'end_date'))
+def update_output(start_date, end_date):
+    if start_date and end_date:
+        return format_date(start_date) + "," + format_date(end_date)
+    else:
+        return None
+
+
 output_list = [
         Output("billing_select", "options"),
         Output("project_select", "options"),
@@ -276,11 +306,12 @@ output_list = [
     ],
 )
 def update(time_span, billing_tag, project, user):
-    global cloud_cost_display
+    # global cloud_cost_display
+
     cloud_cost_sum = get_cloud_cost_sum(time_span, base_url=cost_url, headers=auth_header)
 
-    if cloud_cost_sum > 0.0:
-        cloud_cost_display = "block"
+    # if cloud_cost_sum > 0.0:
+    #     cloud_cost_display = "block"
 
     allocations = get_aggregated_allocations(time_span, base_url=cost_url, headers=auth_header)
     if not allocations:
@@ -318,33 +349,6 @@ def update(time_span, billing_tag, project, user):
         *get_histogram_charts(distributed_cost_table),
         workload_cost_details(distributed_cost_table),
     )
-
-
-# @app.callback([Output("user_select", "value")], [Input("user_chart", "clickData")])
-# def user_clicked(clickData):
-#     if clickData is not None:
-#         x_value = clickData["points"][0]["y"]
-#         return [x_value]
-#     else:
-#         return [None]
-
-
-# @app.callback([Output("project_select", "value")], [Input("project_chart", "clickData")])
-# def project_clicked(clickData):
-#     if clickData is not None:
-#         x_value = clickData["points"][0]["y"]
-#         return [x_value]
-#     else:
-#         return [None]
-
-
-# @app.callback([Output("billing_select", "value")], [Input("tag_chart", "clickData")])
-# def billing_tag_clicked(clickData):
-#     if clickData is not None:
-#         x_value = clickData["points"][0]["y"]
-#         return [x_value]
-#     else:
-#         return [None]
 
 
 if __name__ == "__main__":
