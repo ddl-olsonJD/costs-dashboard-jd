@@ -57,201 +57,195 @@ app.layout = html.Div(
             "Domino Cost Management Report",
             style={"textAlign": "center", "margin-top": "30px"},
         ),
-        dbc.Col(
-            dbc.Row(
-                [
-                    dbc.Col(
-                        html.H4("Data select", style={"margin-top": "20px"}),
-                        width=2,
-                    ),
-                    dbc.Col(html.Hr(style={"margin-top": "40px"}), width=10),
-                ]
-            ),
-            dbc.Row(
-                [
-                    dbc.Col(
-                        html.P(
-                            "Time Span:",
-                            style={"float": "right", "margin-top": "5px"},
-                        ),
-                        width=1,
-                    ),
-                    dbc.Col(
-                        dcc.Dropdown(
-                            id="time_span_select",
-                            options=window_to_param,
-                            value="30d",
-                            clearable=False,
-                            searchable=False,
-                        ),
-                        width=2,
-                    ),
-                    dcc.DatePickerRange(
-                        id='date-picker-range',
-                        min_date_allowed=date(2023, 1, 1),
-                        max_date_allowed=today,
-                        initial_visible_month=last_30,
-                        start_date=last_30,
-                        end_date=today,
-                    ),
-                    html.Div(id='date_time_select', hidden=True),
-                    dcc.Input(id='date_time_select2',  style={'display': "none"}),
-                    dbc.Col(width=9),
-                ],
-                style={"margin-top": "30px"},
-            ),
-            dbc.Row(
-                [
-                    dbc.Col(
-                        html.H4("Filter data by", style={"margin-top": "20px"}),
-                        width=2,
-                    ),
-                    dbc.Col(html.Hr(style={"margin-top": "40px"}), width=10),
-                ],
-                style={"margin-top": "50px"},
-            ),
-            dbc.Row(
-                [
-                    dbc.Col(
-                        html.P(
-                            "Billing Tag:",
-                            style={"float": "right", "margin-top": "5px"},
-                        ),
-                        width=1,
-                        style={'display': "block"},
-                        id="billing-tag-select-dropdown-p",
-                    ),
-                    dbc.Col(
-                        dcc.Dropdown(
-                            id="billing_select",
-                            options=["No data"],
-                            clearable=True,
-                            searchable=True,
-                            style={"width": "100%", "whiteSpace": "nowrap"},
-                        ),
-                        width=3,
-                        id="billing-tag-select-dropdown-col",
-                        style={'display': "block"},
-                    ),
-                    dbc.Col(
-                        html.P(
-                            "Project:",
-                            style={"float": "right", "margin-top": "5px"},
-                        ),
-                        width=1,
-                    ),
-                    dbc.Col(
-                        dcc.Dropdown(
-                            id="project_select",
-                            options=["No data"],
-                            clearable=True,
-                            searchable=True,
-                            style={"width": "100%", "whiteSpace": "nowrap"},
-                        ),
-                        width=3,
-                    ),
-                    dbc.Col(
-                        html.P("User:", style={"float": "right", "margin-top": "5px"}),
-                        width=1,
-                    ),
-                    dbc.Col(
-                        dcc.Dropdown(
-                            id="user_select",
-                            options=["No data"],
-                            clearable=True,
-                            searchable=True,
-                            style={"width": "100%", "whiteSpace": "nowrap"},
-                        ),
-                        width=3,
-                    ),
-                ],
-                style={"margin-top": "30px"},
-            ),
-            width=4
+        dbc.Row(
+            [
+                dbc.Col(
+                    html.H4("Data select", style={"margin-top": "20px"}),
+                    width=2,
+                ),
+                dbc.Col(html.Hr(style={"margin-top": "40px"}), width=10),
+            ]
         ),
-        dbc.Col(
-            dbc.Row(
-                [
-                    dbc.Col(
-                        dbc.Card(
-                            children=[
-                                dbc.CardBody(
-                                    [
-                                        html.H3("Total"),
-                                        html.H4("Loading", id="totalcard"),
-                                    ]
-                                )
-                            ]
-                        )
+        dbc.Row(
+            [
+                dbc.Col(
+                    html.P(
+                        "Time Span:",
+                        style={"float": "right", "margin-top": "5px"},
                     ),
-                    dbc.Col(
-                        dbc.Card(
-                            children=[
-                                dbc.CardBody(
-                                    [
-                                        html.H3("Compute"),
-                                        html.H4("Loading", id="computecard"),
-                                    ]
-                                )
-                            ]
-                        )
+                    width=1,
+                ),
+                dbc.Col(
+                    dcc.Dropdown(
+                        id="time_span_select",
+                        options=window_to_param,
+                        value="30d",
+                        clearable=False,
+                        searchable=False,
                     ),
-                    dbc.Col(
-                        dbc.Card(
-                            children=[
-                                dbc.CardBody(
-                                    [
-                                        html.H3("Storage"),
-                                        html.H4("Loading", id="storagecard"),
-                                    ]
-                                )
-                            ]
-                        )
+                    width=2,
+                ),
+                dcc.DatePickerRange(
+                    id='date-picker-range',
+                    min_date_allowed=date(2023, 1, 1),
+                    max_date_allowed=today,
+                    initial_visible_month=last_30,
+                    start_date=last_30,
+                    end_date=today,
+                ),
+                html.Div(id='date_time_select', hidden=True),
+                dcc.Input(id='date_time_select2',  style={'display': "none"}),
+                dbc.Col(width=9),
+            ],
+            style={"margin-top": "30px"},
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    html.H4("Filter data by", style={"margin-top": "20px"}),
+                    width=2,
+                ),
+                dbc.Col(html.Hr(style={"margin-top": "40px"}), width=10),
+            ],
+            style={"margin-top": "50px"},
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    html.P(
+                        "Billing Tag:",
+                        style={"float": "right", "margin-top": "5px"},
                     ),
-                    dbc.Col(
-                        dbc.Card(
-                            children=[
-                                dbc.CardBody(
-                                    [
-                                        html.H3("Cloud Services"),
-                                        html.H4("Loading", id="cloudcard"),
-                                    ]
-                                )
-                            ]
-                        ),
-                        id="cloud-cost-card",
-                        style={'display': "block"},
+                    width=1,
+                    style={'display': "block"},
+                    id="billing-tag-select-dropdown-p",
+                ),
+                dbc.Col(
+                    dcc.Dropdown(
+                        id="billing_select",
+                        options=["No data"],
+                        clearable=True,
+                        searchable=True,
+                        style={"width": "100%", "whiteSpace": "nowrap"},
                     ),
-                ],
-                style={"margin-top": "50px"},
-            ),
-            dcc.Loading(
-                children=[
-                    dcc.Graph(
-                        id="cumulative-daily-costs",
-                        config={"displayModeBar": False},
-                        style={"margin-top": "40px"},
+                    width=3,
+                    id="billing-tag-select-dropdown-col",
+                    style={'display': "block"},
+                ),
+                dbc.Col(
+                    html.P(
+                        "Project:",
+                        style={"float": "right", "margin-top": "5px"},
+                    ),
+                    width=1,
+                ),
+                dbc.Col(
+                    dcc.Dropdown(
+                        id="project_select",
+                        options=["No data"],
+                        clearable=True,
+                        searchable=True,
+                        style={"width": "100%", "whiteSpace": "nowrap"},
+                    ),
+                    width=3,
+                ),
+                dbc.Col(
+                    html.P("User:", style={"float": "right", "margin-top": "5px"}),
+                    width=1,
+                ),
+                dbc.Col(
+                    dcc.Dropdown(
+                        id="user_select",
+                        options=["No data"],
+                        clearable=True,
+                        searchable=True,
+                        style={"width": "100%", "whiteSpace": "nowrap"},
+                    ),
+                    width=3,
+                ),
+            ],
+            style={"margin-top": "30px"},
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    dbc.Card(
+                        children=[
+                            dbc.CardBody(
+                                [
+                                    html.H3("Total"),
+                                    html.H4("Loading", id="totalcard"),
+                                ]
+                            )
+                        ]
                     )
-                ],
-                type="default",
-            ),
-            dbc.Row(
-                [
-                    dbc.Col(dcc.Graph(id="user_chart", config={"displayModeBar": False})),
-                    dbc.Col(dcc.Graph(id="project_chart", config={"displayModeBar": False})),
-                ]
-            ),
-            dbc.Row(
-                [
-                    dbc.Col(dcc.Graph(id="org_chart", config={"displayModeBar": False})),
-                    dbc.Col(dcc.Graph(id="tag_chart", config={"displayModeBar": False})),
-                ]
-            ),
-            html.H4("Workload Cost Details", style={"margin-top": "50px"}),
-            html.Div(id="workload-cost-table-container"),
-            dbc.Row([], style={"margin-top": "50px"}),
-            width=8
+                ),
+                dbc.Col(
+                    dbc.Card(
+                        children=[
+                            dbc.CardBody(
+                                [
+                                    html.H3("Compute"),
+                                    html.H4("Loading", id="computecard"),
+                                ]
+                            )
+                        ]
+                    )
+                ),
+                dbc.Col(
+                    dbc.Card(
+                        children=[
+                            dbc.CardBody(
+                                [
+                                    html.H3("Storage"),
+                                    html.H4("Loading", id="storagecard"),
+                                ]
+                            )
+                        ]
+                    )
+                ),
+                dbc.Col(
+                    dbc.Card(
+                        children=[
+                            dbc.CardBody(
+                                [
+                                    html.H3("Cloud Services"),
+                                    html.H4("Loading", id="cloudcard"),
+                                ]
+                            )
+                        ]
+                    ),
+                    id="cloud-cost-card",
+                    style={'display': "block"},
+                ),
+            ],
+            style={"margin-top": "50px"},
         ),
+        dcc.Loading(
+            children=[
+                dcc.Graph(
+                    id="cumulative-daily-costs",
+                    config={"displayModeBar": False},
+                    style={"margin-top": "40px"},
+                )
+            ],
+            type="default",
+        ),
+        dbc.Row(
+            [
+                dbc.Col(dcc.Graph(id="user_chart", config={"displayModeBar": False})),
+                dbc.Col(dcc.Graph(id="project_chart", config={"displayModeBar": False})),
+            ]
+        ),
+        dbc.Row(
+            [
+                dbc.Col(dcc.Graph(id="org_chart", config={"displayModeBar": False})),
+                dbc.Col(dcc.Graph(id="tag_chart", config={"displayModeBar": False})),
+            ]
+        ),
+        html.H4("Workload Cost Details", style={"margin-top": "50px"}),
+        html.Div(id="workload-cost-table-container"),
+        dbc.Row([], style={"margin-top": "50px"}),
     ],
     className="container",
 )
@@ -260,8 +254,7 @@ app.layout = html.Div(
 @app.callback(
     Output('time_span_select', 'value'),
     Input('date-picker-range', 'start_date'),
-    Input('date-picker-range', 'end_date')
-)
+    Input('date-picker-range', 'end_date'))
 def update_output(start_date, end_date):
     if start_date and end_date:
         return format_date(start_date) + "," + format_date(end_date)
