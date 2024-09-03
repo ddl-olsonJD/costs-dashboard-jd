@@ -48,6 +48,8 @@ app = Dash(
 
 billing_tag_display = "block"
 cloud_cost_display = "none"
+today = date.today()
+last_30 = today - timedelta(days=30)
 
 app.layout = html.Div(
     [
@@ -85,11 +87,11 @@ app.layout = html.Div(
                 ),
                 dcc.DatePickerRange(
                     id='date-picker-range',
-                    min_date_allowed=date(2015, 8, 5),
-                    max_date_allowed=date.today(),
-                    initial_visible_month=date(2017, 8, 5),
-                    start_date=date.today() - timedelta(days=30),
-                    end_date=date.today(),
+                    min_date_allowed=date(2023, 1, 1),
+                    max_date_allowed=today,
+                    initial_visible_month=last_30,
+                    start_date=last_30,
+                    end_date=today,
                 ),
                 html.Div(id='date_time_select', hidden=True),
                 dcc.Input(id='date_time_select2',  style={'display': "none"}),

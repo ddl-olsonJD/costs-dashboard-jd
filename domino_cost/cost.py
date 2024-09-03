@@ -38,6 +38,10 @@ def to_pd_ts(time_ts: str = "today") -> pd.Timestamp:
     return pd.Timestamp(time_ts, tz="UTC").normalize()
 
 
+def get_last_30() -> date:
+    return date.today() - timedelta(days=30)
+
+
 def get_time_delta(time_span) -> timedelta:
     logger.info("getting time delta from %s", time_span)
     if time_span == "lastweek":
