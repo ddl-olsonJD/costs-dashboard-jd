@@ -91,7 +91,6 @@ app.layout = html.Div(
                         min_date_allowed=date(2023, 1, 1),
                         max_date_allowed=today,
                         initial_visible_month=last_30,
-                        start_date=last_30,
                         end_date=today,
                     ),
                     width=3,
@@ -263,7 +262,7 @@ def update_output(start_date, end_date):
     if start_date and end_date:
         return format_date(start_date) + "," + format_date(end_date)
     else:
-        return None
+        return "30d"
 
 
 @app.callback(
@@ -285,11 +284,11 @@ def show_hide_element(time_span):
 def update_output_date(time_span_select):
     suffix = "," + format_date(str(today))
     if str(time_span_select).endswith('d'):
-        print(time_span_select)
+        logger.info("processing data for span time %s", time_span_select)
         start_date = today - timedelta(days=int(time_span_select.split("d")[0]))
         return format_date(str(start_date)) + suffix
     elif time_span_select:
-        print(time_span_select)
+        logger.info("processing data for span time %s", time_span_select)
         return time_span_select
     else:
         return format_date(str(last_30)) + suffix
@@ -322,14 +321,10 @@ output_list = [
     ],
 )
 def update(time_span, billing_tag, project, user):
-    # global cloud_cost_display
 
     cloud_cost_sum = get_cloud_cost_sum(time_span, base_url=cost_url, headers=auth_header)
-
-    # if cloud_cost_sum > 0.0:
-    #     cloud_cost_display = "block"
-
     allocations = get_aggregated_allocations(time_span, base_url=cost_url, headers=auth_header)
+
     if not allocations:
         return (
             [],
