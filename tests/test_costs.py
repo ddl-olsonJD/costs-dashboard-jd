@@ -1,6 +1,7 @@
 import json
-from datetime import timedelta
+from datetime import timedelta, date
 from enum import StrEnum
+import pandas as pd
 
 import pytest
 
@@ -53,6 +54,13 @@ class TestCostDashboard:
         headers = {}
         cc = get_cloud_cost_sum(selection, base_url, headers)
         assert cc == 0.0
+
+    def test_to_pd_ts(self):
+        input_ts = "2017-08-01T00:00:00Z"
+        actual_ts = to_pd_ts(input_ts)
+        expected_ts = pd.Timestamp(input_ts, tz="UTC").normalize()
+        assert actual_ts == expected_ts
+        assert to_pd_ts() == pd.Timestamp("today", tz="UTC").normalize()
 
 
 class TestConstants:

@@ -1,6 +1,6 @@
 import logging
 import re
-from datetime import timedelta
+from datetime import timedelta, date
 from typing import Any
 from typing import Callable
 from typing import List
@@ -12,8 +12,8 @@ import plotly.graph_objs as go
 from dash import dash_table
 from dash.dash_table import DataTable
 from pandas import DataFrame
-from pandas import Timestamp
 
+from domino_cost import constants
 from domino_cost.constants import NO_TAG
 from domino_cost.cost_enums import CostAggregatedLabels
 from domino_cost.cost_enums import CostFieldsLabels
@@ -29,8 +29,13 @@ def get_domino_namespace(api_host) -> str:
     return match.group("ns")
 
 
-def get_today_timestamp() -> Timestamp:
-    return pd.Timestamp("today", tz="UTC").normalize()
+def format_date(date_ts):
+    date_obj = date.fromisoformat(date_ts)
+    return date_obj.strftime(constants.DATE_FORMAT)
+
+
+def to_pd_ts(time_ts: str = "today") -> pd.Timestamp:
+    return pd.Timestamp(time_ts, tz="UTC").normalize()
 
 
 def get_time_delta(time_span) -> timedelta:
@@ -95,10 +100,10 @@ def clean_df(df: DataFrame, col: str) -> DataFrame:
     return df[~df[col].str.startswith("__")]
 
 
-def get_cumulative_cost_graph(cost_table: DataFrame, time_span: timedelta) -> dict:
+def get_cumulative_cost_graph(cost_table: DataFrame, time_span: str) -> dict:
+    start, end = time_span.split(",")
     x_date_series = pd.date_range(
-        get_today_timestamp() - get_time_delta(time_span),
-        get_today_timestamp(),
+        to_pd_ts(start), to_pd_ts(end),
     ).strftime("%B %-d")
     cost_table_grouped_by_date = cost_table.groupby("FORMATTED START")
 

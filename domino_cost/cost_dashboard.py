@@ -10,7 +10,7 @@ from dash.dependencies import Input
 from dash.dependencies import Output
 
 from domino_cost.constants import window_to_param
-from domino_cost.cost import get_cost_cards
+from domino_cost.cost import get_cost_cards, format_date
 from domino_cost.cost import get_cumulative_cost_graph
 from domino_cost.cost import get_distributed_execution_cost
 from domino_cost.cost import get_domino_namespace
@@ -45,15 +45,6 @@ app = Dash(
     routes_pathname_prefix=None,
     requests_pathname_prefix=requests_pathname_prefix,
 )
-
-
-date_format = '%Y-%m-%dT%H:%M:%SZ'
-
-
-def format_date(date_ts):
-    date_obj = date.fromisoformat(date_ts)
-    return date_obj.strftime(date_format)
-
 
 billing_tag_display = "block"
 cloud_cost_display = "none"
@@ -101,6 +92,7 @@ app.layout = html.Div(
                     end_date=date.today(),
                 ),
                 html.Div(id='date_time_select', hidden=True),
+                dcc.Input(id='date_time_select2',  style={'display': "none"}),
                 dbc.Col(width=9),
             ],
             style={"margin-top": "30px"},
@@ -258,6 +250,17 @@ app.layout = html.Div(
 
 
 @app.callback(
+    Output('time_span_select', 'value'),
+    Input('date-picker-range', 'start_date'),
+    Input('date-picker-range', 'end_date'))
+def update_output(start_date, end_date):
+    if start_date and end_date:
+        return format_date(start_date) + "," + format_date(end_date)
+    else:
+        return None
+
+
+@app.callback(
    Output(component_id='cloud-cost-card', component_property='style'),
    [Input("time_span_select", "value")]
 )
@@ -270,12 +273,18 @@ def show_hide_element(time_span):
 
 
 @app.callback(
-    Output('time_span_select', 'value'),
-    Input('date-picker-range', 'start_date'),
-    Input('date-picker-range', 'end_date'))
-def update_output(start_date, end_date):
-    if start_date and end_date:
-        return format_date(start_date) + "," + format_date(end_date)
+    Output('date_time_select2', 'value'),
+    Input('time_span_select', 'value'),
+)
+def update_output_date(time_span_select):
+    if str(time_span_select).endswith('d'):
+        print(time_span_select)
+        end_date = date.today()
+        start_date = end_date - timedelta(days = int(time_span_select.split("d")[0]))
+        return format_date(str(start_date)) + "," + format_date(str(end_date))
+    elif time_span_select:
+        print(time_span_select)
+        return time_span_select
     else:
         return None
 
@@ -296,10 +305,11 @@ output_list = [
         Output("table-container", "children"),
     ]
 
+
 @app.callback(
     *output_list,
     [
-        Input("time_span_select", "value"),
+        Input("date_time_select2", "value"),
         Input("billing_select", "value"),
         Input("project_select", "value"),
         Input("user_select", "value"),

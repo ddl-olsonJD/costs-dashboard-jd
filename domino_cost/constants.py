@@ -1,3 +1,4 @@
+DATE_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 NO_TAG = "No tag"
 
 window_to_param = {
