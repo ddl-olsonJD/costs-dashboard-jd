@@ -96,9 +96,8 @@ app.layout = html.Div(
                     ),
                     width=3,
                 ),
-                html.Div(id='date_time_select', hidden=True),
                 dbc.Col(
-                    dcc.Input(id='date_time_select2', style={'display': "none"}),
+                    dcc.Input(id='date_time_select', style={'display': "none"}),
                     width=6
                 ),
             ],
@@ -280,20 +279,20 @@ def show_hide_element(time_span):
 
 
 @app.callback(
-    Output('date_time_select2', 'value'),
+    Output('date_time_select', 'value'),
     Input('time_span_select', 'value'),
 )
 def update_output_date(time_span_select):
+    suffix = "," + format_date(str(today))
     if str(time_span_select).endswith('d'):
         print(time_span_select)
-        end_date = date.today()
-        start_date = end_date - timedelta(days = int(time_span_select.split("d")[0]))
-        return format_date(str(start_date)) + "," + format_date(str(end_date))
+        start_date = today - timedelta(days=int(time_span_select.split("d")[0]))
+        return format_date(str(start_date)) + suffix
     elif time_span_select:
         print(time_span_select)
         return time_span_select
     else:
-        return None
+        return format_date(str(last_30)) + suffix
 
 
 output_list = [
@@ -316,7 +315,7 @@ output_list = [
 @app.callback(
     *output_list,
     [
-        Input("date_time_select2", "value"),
+        Input("date_time_select", "value"),
         Input("billing_select", "value"),
         Input("project_select", "value"),
         Input("user_select", "value"),
