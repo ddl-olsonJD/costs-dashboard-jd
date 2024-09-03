@@ -85,17 +85,22 @@ app.layout = html.Div(
                     ),
                     width=2,
                 ),
-                dcc.DatePickerRange(
-                    id='date-picker-range',
-                    min_date_allowed=date(2023, 1, 1),
-                    max_date_allowed=today,
-                    initial_visible_month=last_30,
-                    start_date=last_30,
-                    end_date=today,
+                dbc.Col(
+                    dcc.DatePickerRange(
+                        id='date-picker-range',
+                        min_date_allowed=date(2023, 1, 1),
+                        max_date_allowed=today,
+                        initial_visible_month=last_30,
+                        start_date=last_30,
+                        end_date=today,
+                    ),
+                    width=3,
                 ),
                 html.Div(id='date_time_select', hidden=True),
-                dcc.Input(id='date_time_select2',  style={'display': "none"}),
-                dbc.Col(width=9),
+                dbc.Col(
+                    dcc.Input(id='date_time_select2', style={'display': "none"}),
+                    width=6
+                ),
             ],
             style={"margin-top": "30px"},
         ),
